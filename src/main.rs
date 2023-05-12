@@ -1,8 +1,10 @@
-mod create;
+mod utils; 
+mod ops;
+mod process;
 
-use create::*;
 use std::collections::HashMap;
 use structopt::StructOpt;
+use ops::*;
 
 #[derive(Debug, StructOpt)]
 #[structopt(
@@ -17,7 +19,12 @@ enum Cli {
         name: String,
         #[structopt(name = "command")]
         command: String,
-    }
+        #[structopt(long = "override")]
+        override_flag: bool,
+    },
+    List {},
+    Start {},
+    Stop {},
 }
 
 
@@ -28,9 +35,17 @@ struct Config {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     match Cli::from_args() {
-        Cli::Create { name, command } => {
-            let op = CreateOp { name, command };
-            op.run()?;
+        Cli::Create { name, command, override_flag } => {
+            create(name, command, override_flag)?;
+        }
+        Cli::List { } => {
+            list()?;
+        }
+        Cli::Start { } => {
+            println!("Start");
+        }
+        Cli::Stop { } => {
+            println!("Stop");
         }
     }
 
