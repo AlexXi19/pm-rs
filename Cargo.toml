@@ -1,5 +1,5 @@
 [package]
-name = "pm-rs"
+name = "pmrs"
 version = "0.1.0"
 edition = "2021"
 

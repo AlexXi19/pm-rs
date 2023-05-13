@@ -7,10 +7,9 @@ use structopt::StructOpt;
 
 #[derive(Debug, StructOpt)]
 #[structopt(
-    name = "cli",
-    about = "A rust process manageCli::List()eate and manage daemon processes"
+    name = "pmrs",
+    about = "A rust process manager to start and manage processes"
 )]
-
 enum Cli {
     #[structopt(name = "create")]
     Create {
