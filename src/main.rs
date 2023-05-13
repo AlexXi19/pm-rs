@@ -12,6 +12,7 @@ use structopt::StructOpt;
 )]
 enum Cli {
     #[structopt(name = "create")]
+    /// Creates and starts a new process with name
     Create {
         #[structopt(name = "name")]
         name: String,
@@ -21,19 +22,24 @@ enum Cli {
         override_flag: bool,
     },
     #[structopt(aliases = &["rm"])]
+    /// Removes an inactive process with name
     Remove {
         #[structopt(name = "name")]
         name: String,
     },
+    /// Lists all processes being managed
     List {},
+    /// Starts an inactive process with name
     Start {
         #[structopt(name = "name")]
         name: String,
     },
+    /// Stops an active process with name
     Stop {
         #[structopt(name = "name")]
         name: String,
     },
+    /// Restarts an active process with name
     Restart {
         #[structopt(name = "name")]
         name: String,

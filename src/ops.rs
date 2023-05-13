@@ -8,6 +8,7 @@ pub fn create(name: String, command_string: String, override_flag: bool) -> Resu
     for process in &processes.processes {
         if process.name == name {
             if !override_flag {
+                println!("Process with name {} already exists", name);
                 return Ok(());
             } else {
                 stop_process(process.pid)?;
