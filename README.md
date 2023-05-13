@@ -8,20 +8,20 @@ pmrs 0.1.0
 A rust process manager to start and manage processes
 
 USAGE:
-    pm-rs <SUBCOMMAND>
+    pmrs <SUBCOMMAND>
 
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
 
 SUBCOMMANDS:
-    create
+    create     Creates and starts a new process with name
     help       Prints this message or the help of the given subcommand(s)
-    list
-    remove
-    restart
-    start
-    stop
+    list       Lists all processes being managed
+    remove     Removes an inactive process with name
+    restart    Restarts an active process with name
+    start      Starts an inactive process with name
+    stop       Stops an active process with name
 ```
 
 Example Usage: 
