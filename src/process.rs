@@ -5,14 +5,16 @@ use anyhow::{Context, Result};
 use chrono_humanize::{Accuracy, HumanTime, Tense};
 use psutil::process::{self, Process};
 
+#[derive(Debug, Clone)]
 pub struct ProcessDetail {
     pub name: String,
-    pub pid: u32,
+    pub pid: String,
     pub status: ProcessStatus,
     pub uptime: String,
     pub command: String,
 }
 
+#[derive(Debug, Clone)]
 pub enum ProcessStatus {
     Active,
     Inactive,
@@ -32,6 +34,22 @@ pub fn start_process(command_string: &String) -> Result<u32> {
     // TODO: Redirect stdout and stderr to a file so we can access it later
 
     Ok(cp.id())
+}
+
+pub fn get_process_detail_by_name(name: &String) -> Result<Option<ProcessDetail>> {
+    let mut process_details = sync_processes()?;
+
+    let process_detail = match process_details
+        .iter_mut()
+        .find(|process| process.name == *name)
+    {
+        Some(process) => process,
+        None => {
+            return Ok(None);
+        }
+    };
+
+    Ok(Some(process_detail.clone()))
 }
 
 pub fn sync_processes() -> Result<Vec<ProcessDetail>> {
@@ -60,7 +78,9 @@ pub fn get_process_from_pid(pid: u32) -> Result<Option<Process>> {
 
 pub fn stop_process(pid: u32) -> Result<()> {
     let process = get_process_from_pid(pid)?.context("Process not found")?;
-    process.kill()?;
+
+    // Sometimes PID may not exist so we ignore
+    process.terminate().ok();
 
     Ok(())
 }
@@ -87,9 +107,7 @@ fn humanize_rfc3339(time: String) -> String {
 
 fn get_time_since(start_time: &Option<String>) -> String {
     match start_time {
-        Some(time) => {
-            humanize_rfc3339(time.to_string())
-        }
+        Some(time) => humanize_rfc3339(time.to_string()),
         None => "Unknown".to_string(),
     }
 }
@@ -101,6 +119,12 @@ fn get_process_detail(process: &ManagedProcess) -> ProcessDetail {
         ProcessStatus::Active => get_time_since(&process.start_time),
         ProcessStatus::Inactive => "Inactive".to_string(),
     };
+
+    let pid = match status {
+        ProcessStatus::Active => pid.to_string(),
+        ProcessStatus::Inactive => "Inactive".to_string(),
+    };
+
     let command = process.command.clone();
 
     ProcessDetail {

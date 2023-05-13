@@ -1,15 +1,14 @@
-mod utils; 
 mod ops;
 mod process;
+mod utils;
 
-use std::collections::HashMap;
-use structopt::StructOpt;
 use ops::*;
+use structopt::StructOpt;
 
 #[derive(Debug, StructOpt)]
 #[structopt(
     name = "cli",
-    about = "A rust process manager to run create and manage daemon processes"
+    about = "A rust process manageCli::List()eate and manage daemon processes"
 )]
 
 enum Cli {
@@ -22,30 +21,50 @@ enum Cli {
         #[structopt(long = "override")]
         override_flag: bool,
     },
+    #[structopt(aliases = &["rm"])]
+    Remove {
+        #[structopt(name = "name")]
+        name: String,
+    },
     List {},
-    Start {},
-    Stop {},
-}
-
-
-struct Config {
-    services: HashMap<String, u32>
+    Start {
+        #[structopt(name = "name")]
+        name: String,
+    },
+    Stop {
+        #[structopt(name = "name")]
+        name: String,
+    },
+    Restart {
+        #[structopt(name = "name")]
+        name: String,
+    },
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     match Cli::from_args() {
-        Cli::Create { name, command, override_flag } => {
+        Cli::Create {
+            name,
+            command,
+            override_flag,
+        } => {
             create(name, command, override_flag)?;
         }
-        Cli::List { } => {
+        Cli::Remove { name } => {
+            remove(name)?;
+        }
+        Cli::List {} => {
             list()?;
         }
-        Cli::Start { } => {
-            println!("Start");
+        Cli::Start { name } => {
+            start(name)?;
         }
-        Cli::Stop { } => {
-            println!("Stop");
+        Cli::Stop { name } => {
+            stop(name)?;
+        }
+        Cli::Restart { name } => {
+            restart(name)?;
         }
     }
 
