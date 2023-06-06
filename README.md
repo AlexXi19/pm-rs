@@ -24,51 +24,51 @@ SUBCOMMANDS:
     stop       Stops an active process with name
 ```
 
+Install:
+
+`cargo install --git https://github.com/AlexXi19/pm-rs`
+
 Example Usage: 
 ```
  ~/Desktop/CS/pm-rs git:(main)
 
- ➜ pmrs create sleep "sleep 20"
+ ➜ pmrs create pf 'kubectl port-forward dev 5303:5303'
 
 
  ~/Desktop/CS/pm-rs git:(main)
 
  ➜ pmrs list
 
-+-------+-------+--------+---------------------------------+----------+
-| Name  | PID   | Status | Uptime                          | Command  |
-+-------+-------+--------+---------------------------------+----------+
-| sleep | 27132 | Active | 1 second, 618 ms and 766 µs ago | sleep 20 |
-+-------+-------+--------+---------------------------------+----------+
++------+-------+--------+---------------------------------+------------------------------------+
+| Name | PID   | Status | Uptime                          | Command                            |
++------+-------+--------+---------------------------------+------------------------------------+
+| pf   | 24655 | Active | 1 second, 571 ms and 264 µs ago | kubectl port-forward dev 5303:5303 |
++------+-------+--------+---------------------------------+------------------------------------+
 
  ~/Desktop/CS/pm-rs git:(main)
 
- ➜ pmrs stop sleep
+ ➜ curl localhost:5303/ping
 
-
- ~/Desktop/CS/pm-rs git:(main)
-
- ➜ pmrs list
-
-+-------+----------+----------+----------+----------+
-| Name  | PID      | Status   | Uptime   | Command  |
-+-------+----------+----------+----------+----------+
-| sleep | Inactive | Inactive | Inactive | sleep 20 |
-+-------+----------+----------+----------+----------+
+pong
 
  ~/Desktop/CS/pm-rs git:(main)
 
- ➜ pmrs start sleep
+ ➜ pmrs stop pf
 
 
  ~/Desktop/CS/pm-rs git:(main)
 
  ➜ pmrs list
 
-+-------+-------+--------+---------------------------------+----------+
-| Name  | PID   | Status | Uptime                          | Command  |
-+-------+-------+--------+---------------------------------+----------+
-| sleep | 27252 | Active | 1 second, 255 ms and 742 µs ago | sleep 20 |
-+-------+-------+--------+---------------------------------+----------+
++------+----------+----------+----------+------------------------------------+
+| Name | PID      | Status   | Uptime   | Command                            |
++------+----------+----------+----------+------------------------------------+
+| pf   | Inactive | Inactive | Inactive | kubectl port-forward dev 5303:5303 |
++------+----------+----------+----------+------------------------------------+
 
+ ~/Desktop/CS/pm-rs git:(main)
+
+ ➜ curl localhost:5303/ping
+
+curl: (7) Failed to connect to localhost port 5303 after 5 ms: Connection refused
 ```
