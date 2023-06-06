@@ -21,11 +21,18 @@ pub enum ProcessStatus {
 }
 
 pub fn start_process(command_string: &String) -> Result<u32> {
+    // Wrap the command to run it in the background and then wait
+    // In the Unix world, many processes will "daemonize" themselves.
+    // This means they fork off a child process and then the parent process exits.
+    // This has the effect of disconnecting the process from the terminal that started it, making it a "background" process or "daemon".
+    // One way to handle this would be to wrap your command in a shell script that blocks until the child process exits.
+    let wrapped_command_string = format!("trap 'kill $!' SIGTERM; {} & wait $!", command_string);
+
     // Execute
     let mut command = Command::new("sh");
     let cp = command
         .arg("-c")
-        .arg(command_string.clone())
+        .arg(wrapped_command_string)
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .stdin(Stdio::null())
